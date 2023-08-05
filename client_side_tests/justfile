@@ -11,14 +11,10 @@ test-all:
 
 
 test-fetch-content:
-  #!/usr/bin/env sh
-  git fetch --tags
   just execute test_fetch_content.sh "using fetch content"
 
 
 test-fetch-content-recompile:
-  #!/usr/bin/env sh
-  git fetch --tags
   just execute test_fetch_content_recompile.sh "a second time without a network"
 
 
