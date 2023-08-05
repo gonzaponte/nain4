@@ -42,6 +42,11 @@ jobs:
       - name: Nix build
         run: nix develop
 
+      - name:  debug1
+        run: git config --list
+
+      - name:  debug2
+        run: git log
 
       - name: nix-shell
         run: nix-shell --run just
