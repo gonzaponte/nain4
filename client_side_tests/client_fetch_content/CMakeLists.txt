@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.25)
 project(Client)
 
 execute_process(
-  COMMAND bash -c "git tag | tail -1 | tr -d '\n'"
+  COMMAND bash -c "git tag --sort=version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | tail -1 | tr -d '\n'"
   OUTPUT_VARIABLE TAG
 )
 
