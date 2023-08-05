@@ -3,10 +3,16 @@ cmake_minimum_required(VERSION 3.25)
 project(Client)
 
 execute_process(
+  COMMAND bash -c "git config --get remote.origin.url | cut -d '/' -f 4 | tr -d '\n'"
+  OUTPUT_VARIABLE USERNAME
+)
+
+execute_process(
   COMMAND bash -c "git log | grep -E '^commit.*' | head -2 | tail -1 | cut -d ' ' -f 2 | tr -d '\n'"
   OUTPUT_VARIABLE COMMIT_HASH
 )
 
+message("Using username: ${USERNAME}")
 message("Using commit: ${COMMIT_HASH}")
 
 # ANCHOR: fetch
@@ -16,7 +22,7 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE BOOL "Cache package contents to a
 
 FetchContent_Declare(
   Nain4
-  GIT_REPOSITORY https://github.com/jacg/nain4.git
+  GIT_REPOSITORY https://github.com/${USERNAME}/nain4.git
   GIT_TAG        ${COMMIT_HASH}
   # make sure that no other nain4 installation is used
   OVERRIDE_FIND_PACKAGE
