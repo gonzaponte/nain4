@@ -8,7 +8,7 @@ execute_process(
 )
 
 execute_process(
-  COMMAND bash -c "git log | grep -E '^commit.*' | head -2 | tail -1 | cut -d ' ' -f 2 | tr -d '\n'"
+  COMMAND bash -c "git log -1 | head -1 | cut -d ' ' -f 2 | tr -d '\n'"
   OUTPUT_VARIABLE COMMIT_HASH
 )
 
