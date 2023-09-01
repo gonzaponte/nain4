@@ -1,3 +1,6 @@
+#ifndef N4_MESSENSER_HH
+#define N4_MESSENSER_HH
+
 #include <G4GenericMessenger.hh>
 
 namespace nain4 {
@@ -53,3 +56,5 @@ namespace nain4 {
   };
 
 }
+
+#endif // N4_MESSENGER_HH
