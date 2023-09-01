@@ -2187,18 +2187,20 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
       msg_ = new nain4::messenger{this, "/some_group/", "group description"};
       auto msg = *msg_;
 
-      msg.add("cmd1", var1, "description of var1")
+      msg.add("cmd1", var1)
+         .description("description of var1")
          .unit("mm")
          .dimension("Length")
          .range("cmd1 > 0");
 
-      msg.add("cmd2", var2, "description of var2")
+      msg.add("cmd2", var2)
+         .description("description of var2")
          .options("a b c d")
          .optional();
 
       msg.add("cmd3", var3)
          .description("description of var3")
-         .default_to("false")
+         .defaults_to("false")
          .required();
     }
 
