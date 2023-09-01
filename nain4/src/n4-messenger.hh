@@ -4,13 +4,14 @@
 #include <G4GenericMessenger.hh>
 
 namespace nain4 {
+
   using G4CMD = G4GenericMessenger::G4GenericMessenger::Command;
 
   struct command {
     G4CMD*   handle;
-    G4String name(){ return handle -> GetCommandName(); }
+    G4String name(){ return handle -> command -> GetCommandName(); }
 
-    command(G4CMD* handle, G4String description="") : handle(handle), description_(description) {}
+    command(G4CMD* handle) : handle(handle) {}
 
 #define VAR_AND_SETTER(NAME)                                 \
     std::optional<G4String> NAME##_ = std::nullopt;          \
@@ -26,32 +27,33 @@ namespace nain4 {
     G4bool required_;
     command& required(){required_ =  true; return *this;}
     command& optional(){required_ = false; return *this;}
-  }
-
-
-#define FORWARD(NEW_NAME, TYPE, OLD_NAME) command& NEW_NAME(TYPE v){handle.OLD_NAME(v); return *this;}
-    FORWARD(  dimension, G4String, SetUnitCategory)
-    FORWARD(       unit, G4String, SetUnit)
-    FORWARD(description, G4String, SetGuidance)
-    FORWARD(      range, G4String, SetRange)
-    FORWARD(    options, G4String, SetCandidates)
-    FORWARD( default_to, G4String, SetDefaultValue)
-
-    #undef FORWARD
-
-  private:
-    G4CMD& handle;
-
-    inline G4String get_name() { return handle.command->GetCommandName(); }
   };
+
+
+// #define FORWARD(NEW_NAME, TYPE, OLD_NAME) command& NEW_NAME(TYPE v){handle.OLD_NAME(v); return *this;}
+//     FORWARD(  dimension, G4String, SetUnitCategory)
+//     FORWARD(       unit, G4String, SetUnit)
+//     FORWARD(description, G4String, SetGuidance)
+//     FORWARD(      range, G4String, SetRange)
+//     FORWARD(    options, G4String, SetCandidates)
+//     FORWARD( default_to, G4String, SetDefaultValue)
+
+//     #undef FORWARD
+
+//   private:
+//     G4CMD& handle;
+
+//     inline G4String get_name() { return handle.command->GetCommandName(); }
+//   };
+
 
   struct messenger : public G4GenericMessenger {
     using G4GenericMessenger::G4GenericMessenger;
 
     template<class VAR>
-    command add(G4String name, VAR& variable, G4String doc="") {
-      auto g4cmd = DeclareProperty(name, variable, doc);
-      return command{g4cmd};
+    command add(G4String name, VAR& variable) {
+      auto g4cmd = DeclareProperty(name, variable, "");
+      return command{&g4cmd};
     }
   };
 
