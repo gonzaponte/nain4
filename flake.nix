@@ -1,3 +1,4 @@
+# ignore me
 {
   description = "An abstraction layer on top of Geant4";
 
