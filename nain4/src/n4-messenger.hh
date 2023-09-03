@@ -11,14 +11,15 @@ namespace nain4 {
   private:
     friend struct messenger;
 
-    G4CMD* handle;
+    G4CMD& handle;
     G4String name;
-    cmd_config(G4CMD* handle, G4String name) : handle(handle), name(name) {}
+    cmd_config(G4CMD& handle, G4String name) : handle(handle), name(name) {}
 
 #define VAR_AND_SETTER(NAME, TYPE)                          \
     std::optional<TYPE> NAME##_ = std::nullopt;             \
     cmd_config& NAME(TYPE x) { NAME##_ = x; return *this; }
 
+  public:
     VAR_AND_SETTER(  dimension, G4String)
     VAR_AND_SETTER(       unit, G4String)
     VAR_AND_SETTER(description, G4String)
@@ -30,12 +31,12 @@ namespace nain4 {
     cmd_config& optional(){required_ = false; return *this;}
 
     void done() {
-      if (  dimension_.has_value()) { handle -> SetUnitCategory (  dimension_.value()); }
-      if (       unit_.has_value()) { handle -> SetUnit         (       unit_.value()); }
-      if (      range_.has_value()) { handle -> SetRange        (      range_.value()); }
-      if (    options_.has_value()) { handle -> SetCandidates   (    options_.value()); }
-      if (defaults_to_.has_value()) { handle -> SetDefaultValue (defaults_to_.value()); }
-      if (description_.has_value()) { handle -> SetGuidance     (description_.value()); }
+      if (  dimension_.has_value()) { handle.SetUnitCategory (  dimension_.value()); }
+      if (       unit_.has_value()) { handle.SetUnit         (       unit_.value()); }
+      if (      range_.has_value()) { handle.SetRange        (      range_.value()); }
+      if (    options_.has_value()) { handle.SetCandidates   (    options_.value()); }
+      if (defaults_to_.has_value()) { handle.SetDefaultValue (defaults_to_.value()); }
+      if (description_.has_value()) { handle.SetGuidance     (description_.value()); }
       else {
         std::cerr << "Command " << name
                   << "does not have a description. "
@@ -43,7 +44,7 @@ namespace nain4 {
                   << "`.description(...)`."<< std::endl;
         exit(EXIT_FAILURE);
       }
-      if (   required_.has_value()) { handle -> SetParameterName(name, required_.value()); }
+      if (   required_.has_value()) { handle . SetParameterName(name, required_.value()); }
       else {
         std::cerr << "Command " << name
                   << "has not been declared neither required nor optional. "
@@ -63,14 +64,13 @@ namespace nain4 {
     }
 
     template<class VAR>
-    cmd_config add(G4String name, VAR var) {
+    cmd_config add(G4String name, VAR& var) {
       auto g4cmd = msg -> DeclareProperty(name, var);
-      return cmd_config{&g4cmd, name};
+      return cmd_config{g4cmd, name};
     }
 
   private:
     std::unique_ptr<G4GenericMessenger> msg = nullptr;
-    std::vector<cmd_config> commands;
   };
 
 

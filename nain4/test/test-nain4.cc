@@ -2189,12 +2189,13 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
       msg = nain4::messenger{this, "/some_group/", "group description"};
 
       msg.add("cmd1", var1)
-      //    .description("description of var1")
-      //    // .unit("mm")
-      //    // .dimension("Length")
-      //    // .range("cmd1 > 0")
-      //   .done()
-      ;
+         .description("description of var1")
+         .unit("mm")
+         .dimension("Length")
+         .range("cmd1 > 0")
+         // .done()
+        ;
+
 
       // msg.add("cmd2", var2)
       //    .description("description of var2")
@@ -2236,10 +2237,6 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
   //  auto rm  = default_run_manager();
   auto cls = test_class();
   auto ui  = G4UImanager::GetUIpointer();
-
-  cls. check();
-
-  // ui -> ListCommands("/");
 
   auto out1 = ui->ApplyCommand("/some_group/cmd1 3");
   // auto out1 = ui->ApplyCommand("/some_group/cmd1 3.0 mm");
