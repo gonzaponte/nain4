@@ -9,7 +9,8 @@ namespace nain4 {
 
   struct command {
     G4CMD*   handle;
-    G4String name(){ return handle -> command -> GetCommandName(); }
+    G4String name(){ std::cout << "NAME " << handle -> command -> GetCommandName() << std::endl;
+      return handle -> command -> GetCommandName(); }
 
     command(G4CMD* handle) : handle(handle) {}
 
@@ -24,9 +25,23 @@ namespace nain4 {
     VAR_AND_SETTER(    options)
     VAR_AND_SETTER(defaults_to)
 
-    G4bool required_;
+    G4bool required_ = false;
     command& required(){required_ =  true; return *this;}
     command& optional(){required_ = false; return *this;}
+
+    void done() {
+      std::cout << "DONE HANDLE " << handle << std::endl;
+      if (  dimension_.has_value()) { handle -> SetUnitCategory(  dimension_.value()); }
+      if (       unit_.has_value()) { handle -> SetUnit        (       unit_.value()); }
+      if (description_.has_value()) { handle -> SetGuidance    (description_.value()); }
+      if (      range_.has_value()) { handle -> SetRange       (      range_.value()); }
+      if (    options_.has_value()) { handle -> SetCandidates  (    options_.value()); }
+      if (defaults_to_.has_value()) { handle -> SetDefaultValue(defaults_to_.value()); }
+
+      std::cout << "DONE HANDLE " << handle << std::endl;
+      handle -> SetParameterName(name(), required_);
+      std::cout << "DONE HANDLE " << handle << std::endl;
+    }
   };
 
 
@@ -52,7 +67,7 @@ namespace nain4 {
 
     template<class VAR>
     command add(G4String name, VAR& variable) {
-      auto g4cmd = DeclareProperty(name, variable, "");
+      auto g4cmd = this -> DeclareProperty(name, variable, "");
       return command{&g4cmd};
     }
   };

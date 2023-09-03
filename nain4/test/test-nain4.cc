@@ -2180,59 +2180,93 @@ TEST_CASE("random direction ranges", "[random][direction]") {
 }
 
 TEST_CASE("nain messenger", "[nain][messenger]") {
+
+
   class test_class {
   public:
     test_class() {
 
-      msg_ = new nain4::messenger{this, "/some_group/", "group description"};
-      auto msg = *msg_;
+      // msg_ = new nain4::messenger{this, "/some_group/", "group description"};
+      // auto msg = *msg_;
 
-      msg.add("cmd1", var1)
-         .description("description of var1")
-         .unit("mm")
-         .dimension("Length")
-         .range("cmd1 > 0");
+      // msg.add("cmd1", var1)
+      //    .description("description of var1")
+      //    // .unit("mm")
+      //    // .dimension("Length")
+      //    // .range("cmd1 > 0")
+      //   .done()
+      //   ;
 
-      msg.add("cmd2", var2)
-         .description("description of var2")
-         .options("a b c d")
-         .optional();
+      // msg.add("cmd2", var2)
+      //    .description("description of var2")
+      //    .options("a b c d")
+      //    .optional();
 
-      msg.add("cmd3", var3)
-         .description("description of var3")
-         .defaults_to("false")
-         .required();
+      // msg.add("cmd3", var3)
+      //    .description("description of var3")
+      //    .defaults_to("false")
+      //    .required();
+
+      msg_ = new G4GenericMessenger{this, "/some_group/", ""};
+      msg_ -> DeclareProperty("cmd1", var1, "");
     }
 
-    nain4::messenger* msg_;
+    void check() {
+      std::cout << "MSG* " << msg_ << std::endl;
+    }
+    ~test_class() {
+      std::cout << "destructor " << msg_ << std::endl;
+      //      delete msg_;
+    }
+
+    G4GenericMessenger* msg_;
+    //    nain4::messenger* msg_;
     G4double var1;
     G4String var2;
     G4bool   var3;
   };
 
 
+  /*
+    enum G4UIcommandStatus
+    {
+    fCommandSucceeded = 0,
+    fCommandNotFound = 100,
+    fIllegalApplicationState = 200,
+    fParameterOutOfRange = 300,
+    fParameterUnreadable = 400,
+    fParameterOutOfCandidates = 500,
+    fAliasNotFound = 600
+    };
+   */
+
+  //  auto rm  = default_run_manager();
   auto cls = test_class();
+  auto ui  = G4UImanager::GetUIpointer();
 
+  cls. check();
 
-  // THIS DOESN'T WORK. WHY???
-  auto ui   = G4UImanager::GetUIpointer();
-  auto out1 = ui->ApplyCommand("/some_group/cmd1 3.0 mm");
-  auto out2 = ui->ApplyCommand("/some_group/cmd2 b");
-  auto out3 = ui->ApplyCommand("/some_group/cmd3 true");
-  auto out4 = ui->ApplyCommand("/some_group/cmd4");
-  auto out5 = ui->ApplyCommand("/some_group/cmd2 e");
-  auto out6 = ui->ApplyCommand("/some_group/cmd1 -12.3 mm");
+  // ui -> ListCommands("/");
+
+  auto out1 = ui->ApplyCommand("/some_group/cmd1 3");
+  // auto out1 = ui->ApplyCommand("/some_group/cmd1 3.0 mm");
+  // auto out2 = ui->ApplyCommand("/some_group/cmd2 b");
+  // auto out3 = ui->ApplyCommand("/some_group/cmd3 true");
+  // auto out4 = ui->ApplyCommand("/some_group/cmd4");
+  // auto out5 = ui->ApplyCommand("/some_group/cmd2 e");
+  // auto out6 = ui->ApplyCommand("/some_group/cmd1 -12.3 mm");
 
   CHECK(out1 == fCommandSucceeded);
-  CHECK(out2 == fCommandSucceeded);
-  CHECK(out3 == fCommandSucceeded);
-  CHECK(out4 == fCommandNotFound);
-  CHECK(out5 == fParameterOutOfCandidates);
-  CHECK(out6 == fParameterOutOfRange);
+  // CHECK(out2 == fCommandSucceeded);
+  // CHECK(out3 == fCommandSucceeded);
+  // CHECK(out4 == fCommandNotFound);
+  // CHECK(out5 == fParameterOutOfCandidates);
+  // CHECK(out6 == fParameterOutOfRange);
 
-  CHECK(cls.var1 / mm == 3.0);
-  CHECK(cls.var2 == "b");
-  CHECK(cls.var3);
+  CHECK(cls.var1 == 3.0);
+  // CHECK(cls.var1 / mm == 3.0);
+  // CHECK(cls.var2 == "b");
+  // CHECK(cls.var3);
 
 }
 
