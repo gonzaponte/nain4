@@ -2186,16 +2186,15 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
   public:
     test_class() {
 
-      // msg_ = new nain4::messenger{this, "/some_group/", "group description"};
-      // auto msg = *msg_;
+      msg = nain4::messenger{this, "/some_group/", "group description"};
 
-      // msg.add("cmd1", var1)
+      msg.add("cmd1", var1)
       //    .description("description of var1")
       //    // .unit("mm")
       //    // .dimension("Length")
       //    // .range("cmd1 > 0")
       //   .done()
-      //   ;
+      ;
 
       // msg.add("cmd2", var2)
       //    .description("description of var2")
@@ -2206,21 +2205,15 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
       //    .description("description of var3")
       //    .defaults_to("false")
       //    .required();
-
-      msg_ = new G4GenericMessenger{this, "/some_group/", ""};
-      msg_ -> DeclareProperty("cmd1", var1, "");
     }
 
     void check() {
-      std::cout << "MSG* " << msg_ << std::endl;
+      std::cout << "MSG* " << &msg << std::endl;
     }
     ~test_class() {
-      std::cout << "destructor " << msg_ << std::endl;
-      //      delete msg_;
     }
 
-    G4GenericMessenger* msg_;
-    //    nain4::messenger* msg_;
+    n4::messenger msg;
     G4double var1;
     G4String var2;
     G4bool   var3;
