@@ -2239,7 +2239,7 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
   auto cls = test_class();
   auto ui  = G4UImanager::GetUIpointer();
 
-  auto out1 = ui->ApplyCommand("/some_group/cmd1 3");
+  auto out1 = ui->ApplyCommand("/some_group/cmd1 3 km");
   // auto out1 = ui->ApplyCommand("/some_group/cmd1 3.0 mm");
   // auto out2 = ui->ApplyCommand("/some_group/cmd2 b");
   // auto out3 = ui->ApplyCommand("/some_group/cmd3 true");
@@ -2254,7 +2254,7 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
   // CHECK(out5 == fParameterOutOfCandidates);
   // CHECK(out6 == fParameterOutOfRange);
 
-  CHECK(cls.var1 == 3.0);
+  CHECK(cls.var1 / km == 3.0);
   // CHECK(cls.var1 / mm == 3.0);
   // CHECK(cls.var2 == "b");
   // CHECK(cls.var3);
