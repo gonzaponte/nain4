@@ -4,6 +4,9 @@
 #include <G4Types.hh>
 #include <G4GenericMessenger.hh>
 
+#include <optional>
+#include <memory>
+
 namespace nain4 {
 #define G4CMD G4GenericMessenger::G4GenericMessenger::Command
 
