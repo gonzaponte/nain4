@@ -2193,7 +2193,7 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
          .unit("mm")
          .dimension("Length")
          .range("cmd1 > 0")
-         // .done()
+         .done()
         ;
 
 
