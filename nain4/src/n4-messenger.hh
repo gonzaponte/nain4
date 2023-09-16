@@ -60,26 +60,11 @@ namespace nain4 {
 
       auto& handle = *handle_ptr;
 
+      handle.SetParameterName(name, required_.value_or(false));
       if (  dimension_.has_value()) { handle.SetUnitCategory (  dimension_.value()); }
       if (      range_.has_value()) { handle.SetRange        (      range_.value()); }
       if (    options_.has_value()) { handle.SetCandidates   (    options_.value()); }
       if (defaults_to_.has_value()) { handle.SetDefaultValue (defaults_to_.value()); }
-      if (description_.has_value()) { handle.SetGuidance     (description_.value()); }
-      else {
-        std::cerr << "Command " << name
-                  << "does not have a description. "
-                  << "It is mandatory to specify this property with "
-                  << "`.description(...)`."<< std::endl;
-        exit(EXIT_FAILURE);
-      }
-      if (   required_.has_value()) { handle.SetParameterName(name, required_.value()); }
-      else {
-        std::cerr << "Command " << name
-                  << "has not been declared neither required nor optional. "
-                  << "It is mandatory to specify this property with "
-                  << "`.optional()` or `.required()`."<< std::endl;
-        exit(EXIT_FAILURE);
-      }
     }
   };
 
