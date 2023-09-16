@@ -6,6 +6,7 @@
 
 #include <optional>
 #include <memory>
+#include <type_traits>
 
 
 namespace nain4 {
@@ -16,17 +17,21 @@ namespace nain4 {
   std::optional<TYPE> NAME##_ = std::nullopt;                   \
   cmd_config& NAME(TYPE x) { NAME##_ = x; return *this; }
 
-  template<class T>
+#define IS_METHOD                                       \
+  std::is_function_v               <VAR_OR_FN> ||       \
+  std::is_member_function_pointer_v<VAR_OR_FN>
+
+
+  template<class VAR_OR_FN>
   struct cmd_config {
   private:
     friend struct messenger;
 
     shared_msg msg;
     G4String name;
-    T& var;
+    VAR_OR_FN& var;
 
-    cmd_config(shared_msg msg,  G4String& name, T& var) : msg(msg), name(name), var(var) {}
-
+    cmd_config(shared_msg msg,  G4String& name, VAR_OR_FN& var) : msg(msg), name(name), var(var) {}
 
   public:
     VAR_AND_SETTER(  dimension, G4String)
@@ -41,9 +46,19 @@ namespace nain4 {
     cmd_config& optional(){required_ = false; return *this;}
 
     void done() {
-      auto handle = unit_.has_value() ?
-        msg -> DeclarePropertyWithUnit(name, unit_.value(), var, description_.value_or("")) :
-        msg -> DeclareProperty        (name,                var, description_.value_or("")) ;
+      G4GenericMessenger::Command* handle_ptr;
+      if constexpr (IS_METHOD) {
+        handle_ptr = unit_.has_value() ?
+                     &msg -> DeclareMethodWithUnit(name, unit_.value(), var, description_.value_or("")) :
+                     &msg -> DeclareMethod        (name,                var, description_.value_or(""));
+      }
+      else {
+        handle_ptr = unit_.has_value() ?
+                     &msg -> DeclarePropertyWithUnit(name, unit_.value(), var, description_.value_or("")) :
+                     &msg -> DeclareProperty        (name,                var, description_.value_or("")) ;
+      }
+
+      auto& handle = *handle_ptr;
 
       if (  dimension_.has_value()) { handle.SetUnitCategory (  dimension_.value()); }
       if (      range_.has_value()) { handle.SetRange        (      range_.value()); }
@@ -76,8 +91,8 @@ namespace nain4 {
       msg = std::make_shared<G4GenericMessenger>(std::forward<ArgTypes>(args)...);
     }
 
-    template<class VAR>
-    cmd_config<VAR> add(G4String name, VAR& var) {
+    template<class VAR_OR_FN>
+    cmd_config<VAR_OR_FN> add(G4String name, VAR_OR_FN& var) {
       return {msg, name, var};
     }
 
@@ -87,6 +102,7 @@ namespace nain4 {
 
 }
 
+#undef IS_METHOD
 #undef shared_msg
 #undef VAR_AND_SETTER
 
