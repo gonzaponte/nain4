@@ -41,9 +41,11 @@ namespace nain4 {
     cmd_config& optional(){required_ = false; return *this;}
 
     void done() {
-      auto handle = msg -> DeclareProperty(name, var);
+      auto handle = unit_.has_value() ?
+        msg -> DeclarePropertyWithUnit(name, unit_.value(), var, description_.value_or("")) :
+        msg -> DeclareProperty        (name,                var, description_.value_or("")) ;
+
       if (  dimension_.has_value()) { handle.SetUnitCategory (  dimension_.value()); }
-      if (       unit_.has_value()) { handle.SetUnit         (       unit_.value()); }
       if (      range_.has_value()) { handle.SetRange        (      range_.value()); }
       if (    options_.has_value()) { handle.SetCandidates   (    options_.value()); }
       if (defaults_to_.has_value()) { handle.SetDefaultValue (defaults_to_.value()); }
