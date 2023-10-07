@@ -2277,6 +2277,30 @@ TEST_CASE("nain messenger options", "[nain][messenger]") {
 }
 
 
+TEST_CASE("nain global messenger", "[nain][messenger]") {
+  G4double var_dbl{0};
+  G4String var_str{"1"};
+  G4int    var_int{2};
+  G4bool   var_bool{false};
+
+  nain4::global_msg.add("cmd_dbl" , var_dbl ).done();
+  nain4::global_msg.add("cmd_str" , var_str ).done();
+  nain4::global_msg.add("cmd_int" , var_int ).done();
+  nain4::global_msg.add("cmd_bool", var_bool).done();
+
+  auto ui = G4UImanager::GetUIpointer();
+  auto out_dbl  = ui->ApplyCommand("/global/cmd_dbl 3.14");
+  auto out_str  = ui->ApplyCommand("/global/cmd_str something");
+  auto out_int  = ui->ApplyCommand("/global/cmd_int 42");
+  auto out_bool = ui->ApplyCommand("/global/cmd_bool true");
+
+  CHECK(out_dbl  == fCommandSucceeded); CHECK(var_dbl  == 3.14       );
+  CHECK(out_str  == fCommandSucceeded); CHECK(var_str  == "something");
+  CHECK(out_int  == fCommandSucceeded); CHECK(var_int  == 42         );
+  CHECK(out_bool == fCommandSucceeded); CHECK(var_bool == true       );
+
+}
+
   /*
     enum G4UIcommandStatus
     {
