@@ -1,3 +1,4 @@
+#include <G4UIcommandStatus.hh>
 #include <n4-defaults.hh>
 #include <n4-exceptions.hh>
 #include <n4-shape.hh>
@@ -2179,48 +2180,57 @@ TEST_CASE("random direction ranges", "[random][direction]") {
 #undef R
 }
 
-TEST_CASE("nain messenger", "[nain][messenger]") {
 
+TEST_CASE("nain messenger bare", "[nain][messenger]") {
+  G4double var_dbl{0};
+  G4String var_str{"1"};
+  G4int    var_int{2};
+  G4bool   var_bool{false};
+
+  auto msg = nain4::messenger{nullptr, "/group/", "group description"};
+
+  msg.add("cmd_dbl" , var_dbl ).done();
+  msg.add("cmd_str" , var_str ).done();
+  msg.add("cmd_int" , var_int ).done();
+  msg.add("cmd_bool", var_bool).done();
+
+  auto ui = G4UImanager::GetUIpointer();
+  auto out_dbl  = ui->ApplyCommand("/group/cmd_dbl 3.14");
+  auto out_str  = ui->ApplyCommand("/group/cmd_str something");
+  auto out_int  = ui->ApplyCommand("/group/cmd_int 42");
+  auto out_bool = ui->ApplyCommand("/group/cmd_bool true");
+
+  CHECK(out_dbl  == fCommandSucceeded); CHECK(var_dbl  == 3.14       );
+  CHECK(out_str  == fCommandSucceeded); CHECK(var_str  == "something");
+  CHECK(out_int  == fCommandSucceeded); CHECK(var_int  == 42         );
+  CHECK(out_bool == fCommandSucceeded); CHECK(var_bool == true       );
+}
+
+TEST_CASE("nain messenger class", "[nain][messenger]") {
 
   class test_class {
   public:
     test_class() {
 
-      msg = nain4::messenger{this, "/some_group/", "group description"};
-
-      msg.add("cmd1", var1)
-         .description("description of var1")
-         .unit("mm")
-         .dimension("Length")
-         .range("cmd1 > 0")
-         .required()
-         .done()
-        ;
-
-
-      // msg.add("cmd2", var2)
-      //    .description("description of var2")
-      //    .options("a b c d")
-      //    .optional();
-
-      // msg.add("cmd3", var3)
-      //    .description("description of var3")
-      //    .defaults_to("false")
-      //    .required();
-    }
-
-    void check() {
-      std::cout << "MSG* " << &msg << std::endl;
-    }
-    ~test_class() {
+      msg = nain4::messenger{this, "/group/", "group description"};
+      msg.add("cmd1", var1).done();
+      msg.add("cmd2", var2).done();
     }
 
     n4::messenger msg;
-    G4double var1;
-    G4String var2;
-    G4bool   var3;
+    G4double var1{0};
+    G4String var2{"1"};
   };
 
+  auto cls = test_class();
+  auto ui  = G4UImanager::GetUIpointer();
+
+  auto out1 = ui->ApplyCommand("/group/cmd1 3.14");
+  auto out2 = ui->ApplyCommand("/group/cmd2 something");
+
+  CHECK(out1 == fCommandSucceeded); CHECK(cls.var1 == 3.14       );
+  CHECK(out2 == fCommandSucceeded); CHECK(cls.var2 == "something");
+}
 
   /*
     enum G4UIcommandStatus
@@ -2234,31 +2244,5 @@ TEST_CASE("nain messenger", "[nain][messenger]") {
     fAliasNotFound = 600
     };
    */
-
-  //  auto rm  = default_run_manager();
-  auto cls = test_class();
-  auto ui  = G4UImanager::GetUIpointer();
-
-  auto out1 = ui->ApplyCommand("/some_group/cmd1 3 km");
-  // auto out1 = ui->ApplyCommand("/some_group/cmd1 3.0 mm");
-  // auto out2 = ui->ApplyCommand("/some_group/cmd2 b");
-  // auto out3 = ui->ApplyCommand("/some_group/cmd3 true");
-  // auto out4 = ui->ApplyCommand("/some_group/cmd4");
-  // auto out5 = ui->ApplyCommand("/some_group/cmd2 e");
-  // auto out6 = ui->ApplyCommand("/some_group/cmd1 -12.3 mm");
-
-  CHECK(out1 == fCommandSucceeded);
-  // CHECK(out2 == fCommandSucceeded);
-  // CHECK(out3 == fCommandSucceeded);
-  // CHECK(out4 == fCommandNotFound);
-  // CHECK(out5 == fParameterOutOfCandidates);
-  // CHECK(out6 == fParameterOutOfRange);
-
-  CHECK(cls.var1 / km == 3.0);
-  // CHECK(cls.var1 / mm == 3.0);
-  // CHECK(cls.var2 == "b");
-  // CHECK(cls.var3);
-
-}
 
 #pragma GCC diagnostic pop
