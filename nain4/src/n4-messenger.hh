@@ -89,6 +89,8 @@ namespace nain4 {
     shared_msg msg = nullptr;
   };
 
+
+  static messenger global_msg = messenger{nullptr, "/global/", "global variables"};
 } // namespace nain4
 
 #undef IS_METHOD
