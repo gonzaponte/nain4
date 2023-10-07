@@ -2232,6 +2232,51 @@ TEST_CASE("nain messenger class", "[nain][messenger]") {
   CHECK(out2 == fCommandSucceeded); CHECK(cls.var2 == "something");
 }
 
+TEST_CASE("nain messenger options", "[nain][messenger]") {
+  G4double var0{0};
+  G4double var1{1};
+  G4double var2{2};
+  G4String var3{""};
+
+  auto msg = nain4::messenger{nullptr, "/group/", "group description"};
+
+  msg.add("cmd0", var0)
+     .range("(cmd0 > 3) && (cmd0 < 4)")
+     .done();
+
+  msg.add("cmd1", var1)
+     .unit("m")
+     .done();
+  msg.add("cmd2", var2)
+     .dimension("Length")
+     .done();
+  msg.add("cmd3", var3)
+     .options("a b c d")
+     .done();
+
+  auto ui = G4UImanager::GetUIpointer();
+  auto out0_fail = ui->ApplyCommand("/group/cmd0 1.42");
+  auto out0_ok   = ui->ApplyCommand("/group/cmd0 3.14");
+  auto out1_ok   = ui->ApplyCommand("/group/cmd1 42");
+  auto out2_fail = ui->ApplyCommand("/group/cmd2 1.23 s");
+  auto out2_ok   = ui->ApplyCommand("/group/cmd2 4.56 m");
+  auto out3_fail = ui->ApplyCommand("/group/cmd3 e");
+  auto out3_ok   = ui->ApplyCommand("/group/cmd3 a");
+
+  // Geant doesn't (always?) give the statuses, sometimes it gives
+  // status + 1 or status + 99. We bypass this by taking the most
+  // significat decimal
+  auto check_status = [] (auto status, auto expected) { CHECK(expected == (status / 100) * 100); };
+  check_status(out0_fail, fParameterOutOfRange     );
+  check_status(out0_ok  , fCommandSucceeded        ); CHECK(var0 == 3.14);
+  check_status(out1_ok  , fCommandSucceeded        ); CHECK(var1 == 42*m);
+  check_status(out2_fail, fParameterOutOfCandidates); // Out of candidates is weird, but ok
+  check_status(out2_ok  , fCommandSucceeded        ); CHECK(var2 == 4.56*m);
+  check_status(out3_fail, fParameterOutOfCandidates);
+  check_status(out3_ok  , fCommandSucceeded        ); CHECK(var3 == "a");
+}
+
+
   /*
     enum G4UIcommandStatus
     {
