@@ -89,7 +89,7 @@ namespace nain4 {
     shared_msg msg = nullptr;
   };
 
-}
+} // namespace nain4
 
 #undef IS_METHOD
 #undef shared_msg
