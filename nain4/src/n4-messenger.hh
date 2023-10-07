@@ -39,11 +39,15 @@ namespace nain4 {
     VAR_AND_SETTER(description, G4String)
     VAR_AND_SETTER(      range, G4String)
     VAR_AND_SETTER(    options, G4String)
-    VAR_AND_SETTER(defaults_to, G4String)
 
+    // From the book for app developers:
+    // If [the second parameter of SetParameterName] is true, you
+    // should define the default value using [SetDefaultValue].
+    // not working at the moment
+    // VAR_AND_SETTER(defaults_to, G4String)
     std::optional<G4bool> required_;
-    cmd_config& required(){required_ =  true; return *this;}
-    cmd_config& optional(){required_ = false; return *this;}
+    // cmd_config& required(){required_ =  true; return *this;}
+    // cmd_config& optional(){required_ = false; return *this;}
 
     void done() {
       G4GenericMessenger::Command* handle_ptr;
@@ -64,7 +68,7 @@ namespace nain4 {
       if (  dimension_.has_value()) { handle.SetUnitCategory (  dimension_.value()); }
       if (      range_.has_value()) { handle.SetRange        (      range_.value()); }
       if (    options_.has_value()) { handle.SetCandidates   (    options_.value()); }
-      if (defaults_to_.has_value()) { handle.SetDefaultValue (defaults_to_.value()); }
+      // if (defaults_to_.has_value()) { handle.SetDefaultValue (defaults_to_.value()); }
     }
   };
 
