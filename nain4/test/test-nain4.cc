@@ -2298,8 +2298,61 @@ TEST_CASE("nain global messenger", "[nain][messenger]") {
   CHECK(out_str  == fCommandSucceeded); CHECK(var_str  == "something");
   CHECK(out_int  == fCommandSucceeded); CHECK(var_int  == 42         );
   CHECK(out_bool == fCommandSucceeded); CHECK(var_bool == true       );
-
 }
+
+TEST_CASE("nain global messenger with ui's apply_command", "[nain][messenger]") {
+  G4double var_dbl{0};
+  G4String var_str{"1"};
+  G4int    var_int{2};
+  G4bool   var_bool{false};
+
+  nain4::global_msg.add("cmd_dbl" , var_dbl ).done();
+  nain4::global_msg.add("cmd_str" , var_str ).done();
+  nain4::global_msg.add("cmd_int" , var_int ).done();
+  nain4::global_msg.add("cmd_bool", var_bool).done();
+
+  n4::run_manager::create()
+    .fake_ui()
+    .apply_command("/global/cmd_dbl 3.14")
+    .apply_command("/global/cmd_str something")
+    .apply_command("/global/cmd_int 42")
+    .apply_command("/global/cmd_bool true");
+
+  CHECK(var_dbl  == 3.14       );
+  CHECK(var_str  == "something");
+  CHECK(var_int  == 42         );
+  CHECK(var_bool == true       );
+}
+
+
+TEST_CASE("nain global messenger with ui's CLI", "[nain][messenger]") {
+  G4double var_dbl{0};
+  G4String var_str{"1"};
+  G4int    var_int{2};
+  G4bool   var_bool{false};
+
+  nain4::global_msg.add("cmd_dbl" , var_dbl ).done();
+  nain4::global_msg.add("cmd_str" , var_str ).done();
+  nain4::global_msg.add("cmd_int" , var_int ).done();
+  nain4::global_msg.add("cmd_bool", var_bool).done();
+
+  n4::test::argcv args{ "progname", "--early"
+                      , "/global/cmd_dbl  3.14"
+                      , "/global/cmd_str  something"
+                      , "/global/cmd_int  42  "
+                      , "/global/cmd_bool true"
+                      };
+  n4::run_manager::create()
+    .ui("progname", args.argc, args.argv)
+    .apply_cli_early();
+
+
+  CHECK(var_dbl  == 3.14       );
+  CHECK(var_str  == "something");
+  CHECK(var_int  == 42         );
+  CHECK(var_bool == true       );
+}
+
 
   /*
     enum G4UIcommandStatus
