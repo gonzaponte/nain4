@@ -7,6 +7,7 @@
 #include <n4-volume.hh>
 #include <n4-geometry-iterators.hh>
 #include <n4-material.hh>
+#include <n4-units.hh>
 
 // Solids
 #include <CLHEP/Units/SystemOfUnits.h>
@@ -1870,6 +1871,25 @@ TEST_CASE("random point in sphere", "[random][sphere]") {
   check_around_axis(y_hits);
   check_around_axis(z_hits);
 
+}
+
+TEST_CASE("units", "[nain][units]") {
+  auto name     = "one_over_MeV";
+  auto symbol   = "1/MeV";
+  auto category = "1/Energy";
+  auto value    =  1/MeV;
+
+  // Geant4 requires the units table to be build beforehand, but it's
+  // up to the user to know that and do it.
+  new G4UnitDefinition(name, symbol, category, value);
+  //REQUIRE_THROWS(new G4UnitDefinition(name, symbol, category, value));
+
+  // nain takes care of that for you
+  // REQUIRE_NOTHROW(n4::define_unit(name, symbol, category, value));
+
+  // // IsUnitDefined works with both
+  // CHECK(G4UnitDefinition::IsUnitDefined(  name));
+  // CHECK(G4UnitDefinition::IsUnitDefined(symbol));
 }
 
 #pragma GCC diagnostic pop
