@@ -47,7 +47,7 @@ auto ball   = n4::sphere("ball").r(1.2*m).volume(copper);
   auto copper = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Cu");
   auto radius = 1.2*m;
   auto ball_solid = new G4Sphere("ball", 0, radius, 0, CLHEP::twopi, 0, CLHEP::pi);
-  auto ball = new G4VLogicalVolume(ball_solid, copper, "ball");
+  auto ball = new G4LogicalVolume(ball_solid, copper, "ball");
   ```
 </details>
 
@@ -82,7 +82,7 @@ n4::box("nugget").cube(2*cm).place(gold).in(safe).now();
   auto safe = ...
   auto gold = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Au");
   auto nugget_solid = new G4Box("nugget", 2*cm/2, 2*cm/2, 2*cm/2);
-  auto nugget_logical = new G4VLogicalVolume(nugget_solid, gold, "nugget");
+  auto nugget_logical = new G4LogicalVolume(nugget_solid, gold, "nugget");
   new G4PVPlacement(nullptr, {}, nugget_logical, "nugget", safe, false, 0);
   ```
 </details>
@@ -101,9 +101,9 @@ n4::place(nugget).in(safe).now();
 
 ### Summary
 ```c++
-G4VSolid        * s = n4::SOLID("name", ...).solid();
-G4VLogicalVolume* v = n4::SOLID("name", ...).volume(material);
-G4PVPlacement   * p = n4::SOLID("name", ...).place (material).in(volume) ... .now();
+G4VSolid       * s = n4::SOLID("name", ...).solid();
+G4LogicalVolume* v = n4::SOLID("name", ...).volume(material);
+G4PVPlacement  * p = n4::SOLID("name", ...).place (material).in(volume) ... .now();
 ```
 
 ## Specifying Dimensions
