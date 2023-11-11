@@ -13,6 +13,7 @@
   - [Placement: laziness and accumulation](./explanation/placement-laziness-and-accumulation.md)
   - [Displacements and rotations are not commutative](./explanation/displacements-and-rotations-are-not-commutative.md)
   - [Input types of boolean solids' methods](./explanation/input-types-of-boolean-solids-methods.md)
+  - [Evaluation strategy in boolean solids](./explanation/evaluation-strategy-in-boolean-solids.md)
   - [Return value of `G4VSensitiveDetector::ProcessHits`](./explanation/process-hits-return-value.md)
   - [Why nix?](./explanation/why-nix.md)
 - [Reference](./reference.md)
