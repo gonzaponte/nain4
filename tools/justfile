@@ -1,0 +1,4 @@
+# -*-Makefile-*-
+
+run tool:
+  just tool/run
