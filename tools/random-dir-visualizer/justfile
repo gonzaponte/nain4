@@ -1,0 +1,16 @@
+# -*-Makefile-*-
+
+# Needed to make `"$@"` usable in recipes
+set positional-arguments := true
+
+
+run *ARGS: compile
+  install/bin/visualizer "$@" -g
+
+compile:
+  meson setup build .
+  meson compile -C build
+  meson install -C build
+
+clean:
+  rm build install -rf
