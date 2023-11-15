@@ -1,4 +1,3 @@
-#include <G4UIcommandStatus.hh>
 #include <n4-defaults.hh>
 #include <n4-exceptions.hh>
 #include <n4-shape.hh>
@@ -2233,49 +2232,69 @@ TEST_CASE("nain messenger class", "[nain][messenger]") {
 }
 
 TEST_CASE("nain messenger options", "[nain][messenger]") {
-  G4double var0{0};
-  G4double var1{1};
-  G4double var2{2};
-  G4String var3{""};
-
   auto msg = nain4::messenger{nullptr, "/group/", "group description"};
-
-  msg.add("cmd0", var0)
-     .range("(cmd0 > 3) && (cmd0 < 4)")
-     .done();
-
-  msg.add("cmd1", var1)
-     .unit("m")
-     .done();
-  msg.add("cmd2", var2)
-     .dimension("Length")
-     .done();
-  msg.add("cmd3", var3)
-     .options("a b c d")
-     .done();
-
-  auto ui = G4UImanager::GetUIpointer();
-  auto out0_fail = ui->ApplyCommand("/group/cmd0 1.42");
-  auto out0_ok   = ui->ApplyCommand("/group/cmd0 3.14");
-  auto out1_ok   = ui->ApplyCommand("/group/cmd1 42");
-  auto out2_fail = ui->ApplyCommand("/group/cmd2 1.23 s");
-  auto out2_ok   = ui->ApplyCommand("/group/cmd2 4.56 m");
-  auto out3_fail = ui->ApplyCommand("/group/cmd3 e");
-  auto out3_ok   = ui->ApplyCommand("/group/cmd3 a");
 
   // Geant doesn't (always?) give the statuses, sometimes it gives
   // status + 1 or status + 99. We bypass this by taking the most
   // significat decimal
   auto check_status = [] (auto status, auto expected) { CHECK(expected == (status / 100) * 100); };
-  check_status(out0_fail, fParameterOutOfRange     );
-  check_status(out0_ok  , fCommandSucceeded        ); CHECK(var0 == 3.14);
-  check_status(out1_ok  , fCommandSucceeded        ); CHECK(var1 == 42*m);
-  check_status(out2_fail, fParameterOutOfCandidates); // Out of candidates is weird, but ok
-  check_status(out2_ok  , fCommandSucceeded        ); CHECK(var2 == 4.56*m);
-  check_status(out3_fail, fParameterOutOfCandidates);
-  check_status(out3_ok  , fCommandSucceeded        ); CHECK(var3 == "a");
-}
+  auto ui = G4UImanager::GetUIpointer();
 
+  SECTION("range") {
+    G4double var{0};
+
+    msg.add("cmd", var).range("(cmd > 3) && (cmd < 4)") .done();
+
+    auto fail = ui -> ApplyCommand("/group/cmd 1.42");
+    auto ok   = ui -> ApplyCommand("/group/cmd 3.14");
+
+    check_status(fail, fParameterOutOfRange);
+    check_status(ok  , fCommandSucceeded   ); CHECK(var == 3.14);
+  }
+
+  SECTION("unit") {
+    G4double var{0};
+    msg.add("cmd", var).unit("m").done();
+    auto implicit_unit = ui -> ApplyCommand("/group/cmd 42");
+    check_status(implicit_unit, fCommandSucceeded); CHECK(var == 42* m);
+    auto explicit_unit = ui -> ApplyCommand("/group/cmd 24 km");
+    check_status(explicit_unit, fCommandSucceeded); CHECK(var == 24*km);
+  }
+
+  SECTION("dimension") {
+    G4double var{0};
+    msg.add("var", var).dimension("Length").done();
+    auto fail     = ui -> ApplyCommand("/group/var 1.23 s");
+    auto ok       = ui -> ApplyCommand("/group/var 4.56 m");
+    check_status(fail    , fParameterOutOfCandidates); // Out of candidates is weird, but ok
+    check_status(ok      , fCommandSucceeded        ); CHECK(var == 4.56*m);
+  }
+
+  SECTION("dimension and unit") {
+    G4double explicit_unit{0};
+    G4double implicit_unit{0};
+    msg.add("explicit_unit", explicit_unit).dimension("Length")           .done();
+    msg.add("implicit_unit", implicit_unit).dimension("Length").unit("nm").done();
+    auto unit_needed  = ui -> ApplyCommand("/group/explicit_unit 4.56 m");
+    auto unit_missing = ui -> ApplyCommand("/group/explicit_unit 4.56");
+    auto unit_implied = ui -> ApplyCommand("/group/implicit_unit 7.89");
+    check_status(unit_needed , fCommandSucceeded   ); CHECK(explicit_unit == 4.56*m);
+    check_status(unit_missing, fParameterUnreadable);
+    check_status(unit_implied, fParameterUnreadable); CHECK(implicit_unit == 0.00); // Yuk!
+    auto unit_given   = ui -> ApplyCommand("/group/implicit_unit 3.21 km");
+    check_status(unit_given  , fCommandSucceeded)   ; CHECK(implicit_unit == 3.21*km);
+  }
+
+  SECTION("options") {
+    G4String var{""};
+    msg.add("cmd", var).options("a b c d").done();
+    auto fail = ui -> ApplyCommand("/group/cmd e");
+    auto ok   = ui -> ApplyCommand("/group/cmd a");
+    check_status(fail, fParameterOutOfCandidates);
+    check_status(ok  , fCommandSucceeded        ); CHECK(var == "a");
+  }
+
+}
 
 TEST_CASE("nain global messenger", "[nain][messenger]") {
   G4double var_dbl{0};
@@ -2368,3 +2387,10 @@ TEST_CASE("nain global messenger with ui's CLI", "[nain][messenger]") {
    */
 
 #pragma GCC diagnostic pop
+
+
+// TODO
+//
+// + Protect against specifying same variable twice
+// + Add tests for methods
+// + .done implicit in .add
