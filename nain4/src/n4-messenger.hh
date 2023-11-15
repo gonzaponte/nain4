@@ -1,5 +1,4 @@
-#ifndef N4_MESSENSER_HH
-#define N4_MESSENSER_HH
+#pragma once
 
 #include <G4Types.hh>
 #include <G4GenericMessenger.hh>
@@ -96,5 +95,3 @@ namespace nain4 {
 #undef IS_METHOD
 #undef shared_msg
 #undef VAR_AND_SETTER
-
-#endif // N4_MESSENGER_HH
