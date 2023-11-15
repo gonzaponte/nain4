@@ -2231,7 +2231,7 @@ TEST_CASE("nain messenger class", "[nain][messenger]") {
   CHECK(out2 == fCommandSucceeded); CHECK(cls.var2 == "something");
 }
 
-TEST_CASE("nain messenger options", "[nain][messenger]") {
+TEST_CASE("nain messenger modifiers", "[nain][messenger]") {
   auto msg = nain4::messenger{nullptr, "/group/", "group description"};
 
   // Geant doesn't (always?) give the statuses, sometimes it gives
