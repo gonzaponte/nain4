@@ -79,8 +79,13 @@ namespace nain4 {
       msg = std::make_shared<G4GenericMessenger>(std::forward<ArgTypes>(args)...);
     }
 
-    template<class VAR_OR_FN>
-    cmd_config<VAR_OR_FN> add(G4String name, VAR_OR_FN& var) {
+    template<class VAR>
+    cmd_config<VAR> add(G4String name, VAR& var) {
+      return {msg, name, var};
+    }
+
+    template<class METHOD>
+    cmd_config<METHOD> add_method(G4String name, METHOD var) {
       return {msg, name, var};
     }
 

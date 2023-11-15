@@ -2296,6 +2296,18 @@ TEST_CASE("nain messenger modifiers", "[nain][messenger]") {
 
 }
 
+TEST_CASE("nain messenger methods", "[nain][messenger]") {
+  struct test_class {
+    test_class() : msg{nain4::messenger{this, "/group/", "group description"}} {
+      msg.add_method("append", &test_class::append);
+    }
+    std::vector<G4int> data{};
+  private:
+    n4::messenger msg;
+    void append(G4int x) { data.push_back(x); }
+  };
+}
+
 TEST_CASE("nain global messenger", "[nain][messenger]") {
   G4double var_dbl{0};
   G4String var_str{"1"};
@@ -2343,7 +2355,6 @@ TEST_CASE("nain global messenger with ui's apply_command", "[nain][messenger]") 
   CHECK(var_bool == true       );
 }
 
-
 TEST_CASE("nain global messenger with ui's CLI", "[nain][messenger]") {
   G4double var_dbl{0};
   G4String var_str{"1"};
@@ -2371,7 +2382,6 @@ TEST_CASE("nain global messenger with ui's CLI", "[nain][messenger]") {
   CHECK(var_int  == 42         );
   CHECK(var_bool == true       );
 }
-
 
   /*
     enum G4UIcommandStatus
