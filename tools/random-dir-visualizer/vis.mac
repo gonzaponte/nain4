@@ -14,65 +14,25 @@
 
 /vis/drawVolume # draw world volume
 
-/vis/scene/add/trajectories # smooth
+/vis/scene/add/trajectories
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawLine    false
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 4
-# (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 
-# To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
-
-# Decorations
-# Name
 /vis/set/textColour red
 /vis/set/textLayout right
 /vis/scene/add/text2D 0.9 -.9 24 ! ! random-dir-visualizer
-/vis/set/textLayout    # Revert to normal (left adjusted) layout
-/vis/set/textColour    # Revert to default text colour (blue)
 
-# Axes, scale, etc.
-/vis/scene/add/scale   # Simple scale line
 /vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
-/vis/scene/add/eventID # Drawn at end of event
-/vis/scene/add/date    # Date stamp
 
-# Frame
-/vis/set/colour red
-/vis/set/lineWidth 2
-/vis/scene/add/frame   # Simple frame around the view
-/vis/set/colour        # Revert to default colour (white)
-/vis/set/lineWidth     # Revert to default line width (1.)
+/vis/viewer/set/style wireframe
 
-/vis/set/textColour white
-# Attach text to point in space
-#                    x  y z units font-size 2d-offset    the text
-/vis/scene/add/text 1.5 1 1   m      18        4 4       Corner of the box
-
-# Set colours, transparency and visibility
-
-#                              volume name  depth  visibility
-/vis/geometry/set/visibility      sphere       0       true
-
-#                        name  depth red green blue opacity
-/vis/geometry/set/colour sphere   0    1    1    1     .5
-
-# Two different rendering options
-/vis/viewer/set/style wireframe # Ugly, but might be useful if you need to look inside a volume
-/vis/viewer/set/style surface
-
-# Two different ways of setting the viewing angle
-/vis/viewer/set/viewpointVector    1 2 3
 /vis/viewer/set/viewpointThetaPhi  20 120
-
-# Two different ways of setting the light source angle
-/vis/viewer/set/lightsThetaPhi  150 120
 /vis/viewer/set/lightsVector    2 3 4
 
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
 /vis/verbose warnings
 
-# Shoot 100 particles
 /run/beamOn 1
