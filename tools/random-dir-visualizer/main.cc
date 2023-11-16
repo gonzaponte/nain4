@@ -11,7 +11,7 @@
 namespace config {
   enum class axis {x, y, z};
 
-  unsigned nshoot{10000};
+  unsigned nshoot{50000};
 
   double min_theta{0};
   double max_theta{180};

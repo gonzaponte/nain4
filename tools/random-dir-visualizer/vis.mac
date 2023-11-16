@@ -18,7 +18,7 @@
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawLine    false
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 4
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 8
 
 /vis/set/textColour red
 /vis/set/textLayout right
