@@ -24,7 +24,7 @@
 /vis/set/textLayout right
 /vis/scene/add/text2D 0.9 -.9 24 ! ! random-dir-visualizer
 
-/vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
+/vis/scene/add/axes 0 0 0 2 mm
 
 /vis/viewer/set/style wireframe
 
