@@ -13,17 +13,17 @@ namespace config {
 
   unsigned nshoot{50000};
 
-  double min_theta{0};
-  double max_theta{180};
-  double min_cos_theta{-1};
-  double max_cos_theta{ 1};
-  double min_phi{0};
-  double max_phi{360};
-  bool   bidirectional{false};
-  bool   exclude{false};
-  double rotation_x{0};
-  double rotation_y{0};
-  double rotation_z{0};
+  std::optional<double> min_theta;
+  std::optional<double> max_theta;
+  std::optional<double> min_cos_theta;
+  std::optional<double> max_cos_theta;
+  std::optional<double> min_phi;
+  std::optional<double> max_phi;
+  std::optional<bool>   bidirectional;
+  std::optional<bool>   exclude;
+  std::optional<double> rotation_x;
+  std::optional<double> rotation_y;
+  std::optional<double> rotation_z;
   double unit{deg};
   std::vector<axis> order{};
 
@@ -68,24 +68,33 @@ void random_directions(G4Event* event) {
   auto geantino = G4Geantino::Definition();
   auto vertex   = new G4PrimaryVertex{};
 
-  auto gen = n4::random::direction()
-    .min_cos_theta(config::min_cos_theta)
-    .max_cos_theta(config::max_cos_theta)
-    .min_theta    (config::min_theta     * config::unit)
-    .max_theta    (config::max_theta     * config::unit)
-    .min_phi      (config::min_phi       * config::unit)
-    .max_phi      (config::max_phi       * config::unit)
-    // .rotate  (m) // this one would be a pain via CLI
-    ;
+  auto gen = n4::random::direction();
+#define XXX(name, unit) if (config::name.has_value()) { gen.name(config::name.value() * unit); }
+  if (config::max_cos_theta.has_value()) { gen.max_cos_theta(config::max_cos_theta.value()); }
+  XXX(min_cos_theta, 1);
+  XXX(min_theta, config::unit);
+  XXX(max_theta, config::unit);
+  XXX(min_phi  , config::unit);
+  XXX(max_phi  , config::unit);
+#undef XXX
 
-  if (config::bidirectional) { gen = gen.bidirectional(); }
-  if (config::exclude      ) { gen = gen.exclude();       }
+    // .min_cos_theta(config::min_cos_theta)
+    // .max_cos_theta(config::max_cos_theta)
+    // .min_theta    (config::min_theta     * config::unit)
+    // .max_theta    (config::max_theta     * config::unit)
+    // .min_phi      (config::min_phi       * config::unit)
+    // .max_phi      (config::max_phi       * config::unit)
+    // // .rotate  (m) // this one would be a pain via CLI
+    // ;
+
+  if (config::bidirectional.has_value()) { gen = gen.bidirectional(); }
+  if (config::exclude      .has_value()) { gen = gen.exclude();       }
 
   for (auto& order : config::order) {
     switch (order) {
-      case config::axis::x: gen = gen.rotate_x(config::rotation_x * config::unit); break;
-      case config::axis::y: gen = gen.rotate_y(config::rotation_y * config::unit); break;
-      case config::axis::z: gen = gen.rotate_z(config::rotation_z * config::unit); break;
+      case config::axis::x: gen = gen.rotate_x(config::rotation_x.value() * config::unit); break;
+      case config::axis::y: gen = gen.rotate_y(config::rotation_y.value() * config::unit); break;
+      case config::axis::z: gen = gen.rotate_z(config::rotation_z.value() * config::unit); break;
     }
   }
 
