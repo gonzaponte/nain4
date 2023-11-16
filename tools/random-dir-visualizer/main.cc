@@ -97,6 +97,10 @@ void random_directions(G4Event* event) {
 }
 
 
+// TODO give client ability to pass C++ code snippets to visualize. The obvious
+// choice is for the user to point at a file containing the code, but maybe we
+// could accept C++ code directly as a CLI argument. In any case, it would need
+// to be compile automatically and linked with the random direction utilities.
 int main(int argc, char** argv) {
   auto msg = new G4GenericMessenger(nullptr, "/dir/", "Setters for random directions");
 
