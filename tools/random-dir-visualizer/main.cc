@@ -100,45 +100,19 @@ void random_directions(G4Event* event) {
 int main(int argc, char** argv) {
   auto msg = new G4GenericMessenger(nullptr, "/dir/", "Setters for random directions");
 
-  auto handle =
-  msg -> DeclareProperty("nshoot", config::nshoot);
-  handle.SetRange("nshoot > 0");
-
-  msg -> DeclareProperty("min_theta", config::min_theta);
-  handle.SetRange("(min_theta >= 0) & (min_theta <= 180.)");
-
-  msg -> DeclareProperty("max_theta", config::max_theta);
-  handle.SetRange("(max_theta >= 0) & (max_theta <= 180.)");
-
-  msg -> DeclareProperty("min_cos_theta", config::min_cos_theta);
-  handle.SetRange("(min_cos_theta >= -1) & (min_cos_theta <= 1)");
-
-  msg -> DeclareProperty("max_cos_theta", config::max_cos_theta);
-  handle.SetRange("(max_cos_theta >= -1) & (max_cos_theta <= 1)");
-
-  msg -> DeclareProperty("min_phi", config::min_phi);
-  handle.SetRange("(min_phi >= 0) & (min_phi <= 360.)");
-
-  msg -> DeclareProperty("max_phi", config::max_phi);
-  handle.SetRange("(max_phi >= 0) & (max_phi <= 360.)");
-
-  msg -> DeclareMethod("units", &config::A::units);
-  handle.SetCandidates("deg rad");
-
-  msg -> DeclareProperty("bidirectional", config::bidirectional);
-  handle.SetCandidates("true false");
-
-  msg -> DeclareProperty("exclude", config::exclude);
-  handle.SetCandidates("true false");
-
-  msg -> DeclareMethod("rotate_x", &config::A::rotate_x);
-  handle.SetRange("(rotate_x >= -360) & (rotate_x <= 360.)");
-
-  msg -> DeclareMethod("rotate_y", &config::A::rotate_y);
-  handle.SetRange("(rotate_y >= -360) & (rotate_y <= 360.)");
-
-  msg -> DeclareMethod("rotate_z", &config::A::rotate_z);
-  handle.SetRange("(rotate_z >= -360) & (rotate_z <= 360.)");
+  msg->DeclareProperty("nshoot"        ,  config::nshoot       ).SetParameterName("nshoot"       , true).SetRange("nshoot > 0");
+  msg->DeclareProperty("min_theta"     ,  config::min_theta    ).SetParameterName("min_theta"    , true).SetRange("(min_theta >= 0) & (min_theta <= 180.)");
+  msg->DeclareProperty("max_theta"     ,  config::max_theta    ).SetParameterName("max_theta"    , true).SetRange("(max_theta >= 0) & (max_theta <= 180.)");
+  msg->DeclareProperty("min_cos_theta" ,  config::min_cos_theta).SetParameterName("min_cos_theta", true).SetRange("(min_cos_theta >= -1) & (min_cos_theta <= 1)");
+  msg->DeclareProperty("max_cos_theta" ,  config::max_cos_theta).SetParameterName("max_cos_theta", true).SetRange("(max_cos_theta >= -1) & (max_cos_theta <= 1)");
+  msg->DeclareProperty("min_phi"       ,  config::min_phi      ).SetParameterName("min_phi"      , true).SetRange("(min_phi >= 0) & (min_phi <= 360.)");
+  msg->DeclareProperty("max_phi"       ,  config::max_phi      ).SetParameterName("max_phi"      , true).SetRange("(max_phi >= 0) & (max_phi <= 360.)");
+  msg->DeclareProperty("bidirectional" ,  config::bidirectional).SetParameterName("bidirectional", true).SetCandidates("true false");
+  msg->DeclareProperty("exclude"       ,  config::exclude      ).SetParameterName("exclude"      , true).SetCandidates("true false");
+  msg->DeclareMethod  ("units"         , &config::A::units     ).SetParameterName("units"        , true).SetCandidates("deg rad");
+  msg->DeclareMethod  ("rotate_x"      , &config::A::rotate_x  ).SetParameterName("rotate_x"     , true).SetRange("(rotate_x >= -360) & (rotate_x <= 360.)");
+  msg->DeclareMethod  ("rotate_y"      , &config::A::rotate_y  ).SetParameterName("rotate_y"     , true).SetRange("(rotate_y >= -360) & (rotate_y <= 360.)");
+  msg->DeclareMethod  ("rotate_z"      , &config::A::rotate_z  ).SetParameterName("rotate_z"     , true).SetRange("(rotate_z >= -360) & (rotate_z <= 360.)");
 
   n4::run_manager::create()
     .ui("random-directions-visualizer", argc, argv)
