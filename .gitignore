@@ -22,3 +22,6 @@ G4History.macro
 /n4-examples/*/src/globber.sh
 /n4-examples/*/build
 /n4-examples/*/install
+
+.nain4-compilation-log
+.nain4-test-compilation-log
