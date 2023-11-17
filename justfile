@@ -13,13 +13,22 @@ clean:
     fd --no-ignore "^build$"   --exec rm -rf {}
     fd --no-ignore "^install$" --exec rm -rf {}
 
+setup-builddir-only-when-needed src-name build-name:
+    #!/usr/bin/env bash
+    builddir=nain4/build/{{build-name}}
+    if  [ ! -d $builddir ]; then
+        meson setup $builddir nain4/{{src-name}}
+    else
+        echo nain4 {{src-name}} build directory already set up
+    fi
+
 install-nain4:
-    meson setup nain4/build/nain4 nain4/src
+    just setup-builddir-only-when-needed src nain4
     meson compile -C nain4/build/nain4
     meson install -C nain4/build/nain4
 
 install-tests: install-nain4
-    meson setup nain4/build/nain4-test nain4/test
+    just setup-builddir-only-when-needed test nain4-test
     meson compile -C nain4/build/nain4-test
     meson install -C nain4/build/nain4-test
 
