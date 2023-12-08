@@ -77,4 +77,27 @@ auto min_max(const CONTAINER& data)
 
 #undef BSTATS
 
+struct straight_line {
+  double slope;
+  double intercept;
+};
+
+template<class CONTAINER>
+auto straight_line_fit(const CONTAINER& x, const CONTAINER& y) -> std::optional<straight_line> {
+  if (x.size() <= 1 || x.size() != y.size()) return {};
+
+  auto xmean = mean(x).value();
+  auto ymean = mean(y).value();
+  double dx, dy, top=0, bot=0;
+  for (auto i=0; i<x.size(); i++) {
+    dx = x[i] - xmean;
+    dy = y[i] - ymean;
+    top += dx*dy;
+    bot += dx*dx;
+  }
+  auto slope     = top/bot;
+  auto intercept = ymean - slope*xmean;
+  return {slope, intercept};
+}
+
 namespace n4 { using namespace nain4; }
