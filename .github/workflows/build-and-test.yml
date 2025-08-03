@@ -54,6 +54,9 @@ jobs:
       - name: Build nix development environment
         run: nix develop
 
+      - name: tmate
+        uses: mxschmitt/action-tmate@v3
+
       - name: Compile nain4
         run: nix develop .#${{ matrix.devshell }} -c just install-nain4 | tee compilation-log
 
