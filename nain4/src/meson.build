@@ -14,6 +14,8 @@ project( 'nain4'
 
 argparse = dependency( 'argparse', method: 'pkg-config')
 boost    = dependency(    'boost', method: 'pkg-config')
+opengl   = dependency(   'OpenGL', method: 'pkg-config', required: false)
+agl      = dependency(      'AGL', method: 'pkg-config', required: false)
 
 # Remember to update them also in the meson.build file for the tests directory
 geant4_modules = [ 'Geant4::G4ptl'              , 'Geant4::G4analysis' , 'Geant4::G4digits_hits'
@@ -91,7 +93,7 @@ geant4_include = geant4.get_variable(cmake: 'Geant4_INCLUDE_DIRS')
 nain4_lib = shared_library( 'nain4'
                           , nain4_sources
                           , include_directories: [nain4_include, geant4_include]
-                          , dependencies       : nain4_deps
+                          , dependencies       : nain4_deps + [opengl, agl]
                           , link_args          : ['-framework', 'OpenGL', '-framework', 'AGL']
                           , install            : true
                           )
