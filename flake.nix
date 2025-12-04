@@ -17,8 +17,8 @@
       outputs        = import ./flake/outputs.nix;
       system         = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       localFlakePath = builtins.toString ./.;
-      gitUrl         = self.sourceInfo.url or null;
-      gitUrlOrPath   = if gitUrl then localFlakePath else "NoUrlOrPath";
+      gitUrl         = self.sourceInfo.url or "noUrl";
+      gitUrlOrPath   = if gitUrl=="noUrl" then localFlakePath else "NoUrlOrPath";
       gitRev         = self.rev or "dirty";
 
     in  nosys (inputs // { inherit system; }) outputs //
