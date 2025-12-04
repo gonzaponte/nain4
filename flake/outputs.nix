@@ -182,10 +182,10 @@
         fi
 
         echo "================================================================================"
-        echo rev ${self.gitrev}
-        echo url ${self.giturl}
-        echo rev ${self.gitpath}
-        echo pou ${self.giturlorpath}
+        echo rev ${self.gitRev}
+        echo url ${self.gitUrl}
+        echo lfp ${self.localFlakePath}
+        echo uop ${self.gitUrlOrPath}
         echo "================================================================================"
 
         mkdir -p $DIRECTORY/scripts

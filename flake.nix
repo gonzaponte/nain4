@@ -14,12 +14,18 @@
     ...
   }:
     let
-      giturl       = self.sourceInfo.url  or "nullurl";
-      gitpath      = self.sourceInfo.path or "nullpath";
-      giturlorpath = self.sourceInfo.url or self.sourceInfo.path or "notgit";
-      gitrev       = self.rev or "dirty";
-      outputs      = import ./flake/outputs.nix;
-      system       = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      outputs        = import ./flake/outputs.nix;
+      system         = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      localFlakePath = builtins.toString ./.;
+      gitUrl         = builtins.default null self.sourceInfo.url;
+      gitUrlOrPath   = builtins.default localFlakePath gitUrl;
+      gitRev         = builtins.default "dirty" self.rev;
+
     in  nosys (inputs // { inherit system; }) outputs //
-        {giturl=giturl; gitpath=gitpath; giturlorpath=giturlorpath; gitrev=gitrev;};
+        {
+          localFlakePath = localFlakePath;
+          gitUrl         = gitUrl;
+          gitUrlOrPath   = gitUrlOrPath;
+          gitRev         = gitRev;
+        };
 }
