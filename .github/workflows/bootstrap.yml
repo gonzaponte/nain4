@@ -50,12 +50,17 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_JACG_NAIN4 }}'
 
+      - name: vars
+        run: |
+          echo actor "${GITHUB_ACTOR}"
+          echo sha   "${GITHUB_SHA}"
+
       - name: Test bootstrapping of client project
         run: |
           cd ~/work
           git config --global user.name Tester
           git config --global user.email tester@testing.org
-          nix run github:jacg/nain4#bootstrap-client-project my-project name-chosen-by-me "description of my project"
+          nix run github:${GITHUB_ACTOR}/nain4?rev=${GITHUB_SHA}#bootstrap-client-project my-project name-chosen-by-me "description of my project"
           cd my-project
           nix develop -c just | tee just-output
           PATTERN="end of event 10"
