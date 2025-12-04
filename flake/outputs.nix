@@ -180,6 +180,14 @@
           echo "REQUIRED  third argument: IN QUOTES single-line description of project"
           exit 1
         fi
+
+        echo "================================================================================"
+        echo rev ${self.gitrev}
+        echo url ${self.giturl}
+        echo rev ${self.gitpath}
+        echo pou ${self.giturlorpath}
+        echo "================================================================================"
+
         mkdir -p $DIRECTORY/scripts
         FQ_DIRECTORY=$(${pkgs.coreutils}/bin/readlink -f $DIRECTORY)
         ${pkgs.coreutils}/bin/cp -Tr ${self}/templates/basic                                    $FQ_DIRECTORY
@@ -188,6 +196,7 @@
 
         chmod -R u+w $FQ_DIRECTORY
 
+        ${pkgs.coreutils}/bin/sed -i "s/github:jacg\/nain4/github:jacg\?rev\=${self.gitrev}/g"
         ${pkgs.coreutils}/bin/mv     $FQ_DIRECTORY/src/n4app.cc                                 $FQ_DIRECTORY/src/''${BASE_NAME}.cc
         nix develop  $FQ_DIRECTORY -c true # create flake.lock
         cd           $FQ_DIRECTORY
