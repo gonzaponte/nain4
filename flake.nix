@@ -20,5 +20,6 @@
       gitrev       = self.rev or "dirty";
       outputs      = import ./flake/outputs.nix;
       system       = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-    in {giturl=giturl; gitpath=gitpath; giturlorpath=giturlorpath; gitrev=gitrev;} // nosys (inputs // { inherit system; }) outputs;
+    in  nosys (inputs // { inherit system; }) outputs //
+        {giturl=giturl; gitpath=gitpath; giturlorpath=giturlorpath; gitrev=gitrev;};
 }
