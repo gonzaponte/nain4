@@ -198,7 +198,7 @@
 
 
         # Using | instead of / as a delimiter to avoid escaping them
-        ${pkgs.coreutils}/bin/sed -i "s|github:jacg/nain4|${self.gitUrlOrPath}?rev=${self.gitRev}|g"
+        ${pkgs.gnused}/bin/sed -i "s|github:jacg/nain4|${self.gitUrlOrPath}?rev=${self.gitRev}|g" $FQ_DIRECTORY/flake.nix
         ${pkgs.coreutils}/bin/mv     $FQ_DIRECTORY/src/n4app.cc                                 $FQ_DIRECTORY/src/''${BASE_NAME}.cc
         nix develop  $FQ_DIRECTORY -c true # create flake.lock
         cd           $FQ_DIRECTORY
