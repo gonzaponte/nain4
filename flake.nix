@@ -8,12 +8,17 @@
   };
 
   outputs = inputs @ {
+    self,
     nosys,
     nixpkgs, # <---- This `nixpkgs` still has the `system` e.g. legacyPackages.${system}.zlib
     ...
   }:
     let
-      outputs = import ./flake/outputs.nix;
-      system = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-    in nosys (inputs // { inherit system; }) outputs;
+      giturl       = self.sourceInfo.url  or "nullurl";
+      gitpath      = self.sourceInfo.path or "nullpath";
+      giturlorpath = self.sourceInfo.url or self.sourceInfo.path or "notgit";
+      gitrev       = self.rev or "dirty";
+      outputs      = import ./flake/outputs.nix;
+      system       = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+    in {giturl=giturl; gitpath=gitpath; giturlorpath=giturlorpath; gitrev=gitrev;} // nosys (inputs // { inherit system; }) outputs;
 }
