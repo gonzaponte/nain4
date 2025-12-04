@@ -62,6 +62,7 @@ jobs:
           git config --global user.email tester@testing.org
           nix run github:${GITHUB_ACTOR}/nain4?rev=${GITHUB_SHA}#bootstrap-client-project my-project name-chosen-by-me "description of my project"
           cd my-project
+          cat flake.nix
           nix develop -c just | tee just-output
           PATTERN="end of event 10"
           echo Looking for "'$PATTERN'" in output of 'just'
