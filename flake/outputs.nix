@@ -180,6 +180,14 @@
           echo "REQUIRED  third argument: IN QUOTES single-line description of project"
           exit 1
         fi
+
+        echo "================================================================================"
+        echo rev ${self.gitRev}
+        echo url ${self.gitUrl}
+        echo lfp ${self.localFlakePath}
+        echo uop ${self.gitUrlOrPath}
+        echo "================================================================================"
+
         mkdir -p $DIRECTORY/scripts
         FQ_DIRECTORY=$(${pkgs.coreutils}/bin/readlink -f $DIRECTORY)
         ${pkgs.coreutils}/bin/cp -Tr ${self}/templates/basic                                    $FQ_DIRECTORY
