@@ -19,7 +19,7 @@
       localFlakePath = builtins.toString ./.;
       gitUrl         = builtins.default null self.sourceInfo.url;
       gitUrlOrPath   = builtins.default localFlakePath gitUrl;
-      gitRev         = builtins.default "dirty" self.rev;
+      gitRev         = self.rev or "dirty";
 
     in  nosys (inputs // { inherit system; }) outputs //
         {
