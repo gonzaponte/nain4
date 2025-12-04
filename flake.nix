@@ -18,7 +18,7 @@
       system         = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       localFlakePath = builtins.toString ./.;
       gitUrl         = self.sourceInfo.url or null;
-      gitUrlOrPath   = if gitUrl==null then localFlakePath else "NoUrlOrPath";
+      gitUrlOrPath   = if gitUrl then localFlakePath else "NoUrlOrPath";
       gitRev         = self.rev or "dirty";
 
     in  nosys (inputs // { inherit system; }) outputs //
