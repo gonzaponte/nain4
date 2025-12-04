@@ -196,7 +196,7 @@
 
         chmod -R u+w $FQ_DIRECTORY
 
-        ${pkgs.coreutils}/bin/sed -i "s/github:jacg\/nain4/github:jacg\?rev\=${self.gitrev}/g"
+        ${pkgs.coreutils}/bin/sed -i "s/github:jacg\/nain4/github:jacg\?rev\=${self.gitRev}/g"
         ${pkgs.coreutils}/bin/mv     $FQ_DIRECTORY/src/n4app.cc                                 $FQ_DIRECTORY/src/''${BASE_NAME}.cc
         nix develop  $FQ_DIRECTORY -c true # create flake.lock
         cd           $FQ_DIRECTORY
